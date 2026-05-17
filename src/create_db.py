@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-passwords_to_try = ["", "postgres", "admin", "1234", "password", "root", "shopanalytics"]
+passwords_to_try = ["", "12345", "postgres", "admin", "1234", "password", "root", "shopanalytics"]
 user = "postgres"
 host = "localhost"
 port = "5432"
