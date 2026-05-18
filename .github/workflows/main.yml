@@ -14,9 +14,9 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: ${{ secrets.DB_USER || 'postgres' }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD || 'admin' }}
-          POSTGRES_DB: ${{ secrets.DB_NAME || 'shopanalytics' }}
+          POSTGRES_USER: ${{ secrets.DB_USER != '' && secrets.DB_USER || 'postgres' }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD != '' && secrets.DB_PASSWORD || '12345' }}
+          POSTGRES_DB: ${{ secrets.DB_NAME != '' && secrets.DB_NAME || 'shopanalytics' }}
         ports:
           - 5432:5432
         options: >-
@@ -44,9 +44,9 @@ jobs:
       env:
         DB_HOST: localhost
         DB_PORT: 5432
-        DB_USER: ${{ secrets.DB_USER || 'postgres' }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD || 'admin' }}
-        DB_NAME: ${{ secrets.DB_NAME || 'shopanalytics' }}
+        DB_USER: ${{ secrets.DB_USER != '' && secrets.DB_USER || 'postgres' }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD != '' && secrets.DB_PASSWORD || '12345' }}
+        DB_NAME: ${{ secrets.DB_NAME != '' && secrets.DB_NAME || 'shopanalytics' }}
       run: |
         # Verificamos que el código compile y se pueda importar sin fallos de sintaxis severos
         python -c "from src.scraper import BBCMundoScraperPOO; print('Sintaxis y Módulos OK')"

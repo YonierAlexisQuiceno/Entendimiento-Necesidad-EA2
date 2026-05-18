@@ -29,7 +29,7 @@ class BBCMundoScraperPOO:
 
         # Conexión a PostgreSQL vía SQLAlchemy usando variables de entorno
         db_user = os.getenv("DB_USER", "postgres")
-        db_pass = os.getenv("DB_PASSWORD", "admin")
+        db_pass = os.getenv("DB_PASSWORD", "12345")
         db_host = os.getenv("DB_HOST", "localhost")
         db_port = os.getenv("DB_PORT", "5432")
         db_name = os.getenv("DB_NAME", "shopanalytics")

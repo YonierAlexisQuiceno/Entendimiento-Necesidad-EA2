@@ -50,7 +50,7 @@ BeautifulSoup extrae la información en fracciones de segundo y consume mínimos
 
 #### Despliegue Cloud (Google Antigravity / Cloud Run)
 
-Al requerir contenerización para su despliegue en Google Cloud, un script basado en `requests` y `bs4` resulta en una imagen Docker ultraligera (basada en Alpine o Slim), reduciendo costos de ejecución en arquitecturas Serverless.
+Al ejecutarse como un script Python nativo en entorno local, `requests` y `bs4` consumen mínimos recursos del sistema. Esto facilita también su eventual despliegue en servicios serverless como Google Cloud Run sin dependencias pesadas.
 
 ## 2.2 Diseño del Scraper (Programación Orientada a Objetos - POO)
 
