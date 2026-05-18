@@ -1,0 +1,17 @@
+# Credenciales y entorno
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Archivos pesados de datos
+archive.zip
