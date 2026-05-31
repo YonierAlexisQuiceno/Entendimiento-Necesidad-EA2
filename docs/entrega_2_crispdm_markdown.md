@@ -1,215 +1,148 @@
-# S30 - Entrega 2: Entendimiento de la Necesidad EA2
+# S30 - Entrega 2: Preparación e Ingesta de Datos mediante Web Scraping (EA2)
 
 **Estudiante:** Yonier Alexis Quiceno Rodríguez  
 **Universidad:** IU Digital de Antioquia  
 **Programa:** Ingeniería de Software y Datos  
 **Grupo:** PREICA2601B020089 - Programación para Análisis de Datos  
-**Docente:** Ana Maria Lopez / Darkanita  
-**Fecha:** 15 de Mayo de 2026
+**Docente:** Ana Maria Lopez  
+**Fecha:** 31 de mayo de 2026
 
 ---
 
-# 1. Actualización de la Necesidad y Contexto (Fase 1: Comprensión del Negocio)
+# 1. Alineación y Actualización de la Necesidad (Fase 1: Comprensión del Negocio)
 
-## 1.1 Contexto Actualizado: ShopAnalytics S.A.S.
+## 1.1 Contexto e Integración del Proyecto
+En la primera entrega (EA1), se definió y estructuró la base de datos transaccional local **SQLite (`shopanalytics.db`)** para la optimización del inventario físico de **ShopAnalytics S.A.S.** (control de sobrestock, alerta preventiva de reabastecimiento e indicadores regionales de disponibilidad) utilizando más de 5,000 registros transaccionales simulados.
 
-En la primera entrega (Fases 1 y 2 de CRISP-DM), se definió la necesidad de la empresa **ShopAnalytics S.A.S.** de optimizar su inventario mediante el análisis de datos transaccionales. Sin embargo, tras una revisión gerencial, se determinó que los factores externos (macroeconómicos, sociopolíticos y ambientales de Latinoamérica) tienen un impacto directo y profundo en la cadena de suministro, los tiempos de entrega y el comportamiento de compra de los clientes.
+Sin embargo, para lograr un **Sistema de Inteligencia de Mercado** verdaderamente proactivo, ShopAnalytics S.A.S. requiere cruzar su flujo transaccional con **factores macroambientales externos** (riesgos logísticos, políticos, cambiarios o huelgas en Latinoamérica) que impactan directamente los tiempos de importación, despacho y la disponibilidad de inventario.
 
-Por lo tanto, la necesidad del negocio evoluciona: **ShopAnalytics S.A.S.** requiere implementar un **Sistema de Inteligencia de Mercado**. El objetivo principal es extraer de forma automatizada, estructurada y recurrente, noticias relevantes del portal BBC Mundo Latinoamérica. Esta información servirá como base de conocimiento no estructurada para, en fases posteriores, entrenar modelos predictivos y de clasificación que emitan alertas tempranas sobre el inventario.
+Por lo tanto, este segundo entregable (EA2) implementa las **Fases 2, 3 y 4 de CRISP-DM** mediante el desarrollo de un **Scraper de Noticias en Tiempo Real** utilizando Programación Orientada a Objetos (POO). Este scraper extrae de forma estructurada y sin duplicados información de actualidad desde la sección de Latinoamérica de **BBC Mundo** y la almacena en una base de datos relacional robusta (**PostgreSQL**), preparando la base de conocimiento para futuros modelos de Machine Learning (SVM) de clasificación de riesgos.
 
-## 1.2 Objetivos del Web Scraping
-
-- **Extraer:** Título, descripción, fecha, contenido completo y etiquetas (temas) de los artículos publicados en la sección de Latinoamérica de BBC Mundo.
-- **Procesar:** Limpiar el HTML, eliminando ruido (anuncios, menús) y estructurando el texto para su futuro análisis de Procesamiento de Lenguaje Natural (NLP).
-- **Ingestar:** Almacenar de forma segura y sin duplicados estos datos en una base de datos relacional robusta (PostgreSQL).
-- **Integrar:** Preparar la arquitectura para que los datos sean visualizados en Power BI y procesados por un modelo de Machine Learning (SVM).
+## 1.2 Objetivos Estratégicos del Web Scraping
+* **Extracción Automatizada:** Capturar título, descripción, fecha de publicación, cuerpo de texto completo y etiquetas (países/temas relacionados) de las noticias recientes.
+* **Integridad sin Duplicados:** Implementar una validación física que identifique noticias ya almacenadas para evitar la redundancia de datos.
+* **Calidad de Textos para NLP:** Limpiar y estructurar el texto no estructurado (`texto_completo`) para alimentar un modelo analítico de vectorización y clasificación de riesgo logístico.
 
 ---
 
 # 2. Comprensión y Preparación de los Datos (Fases 2 y 3 CRISP-DM)
 
-## 2.1 Selección y Justificación de la Herramienta
+## 2.1 Selección y Justificación Técnica de la Herramienta
+Se evaluaron tres tecnologías líderes para la recolección de datos: **Scrapy**, **Selenium** y **BeautifulSoup**. La herramienta seleccionada fue **BeautifulSoup4 (BS4)** junto a la librería de peticiones HTTP **Requests**.
 
-Para este proyecto se evaluaron tres herramientas: **Scrapy**, **Selenium** y **BeautifulSoup**. La herramienta seleccionada fue **BeautifulSoup (BS4)** en combinación con **Requests**.
+### Cuadro Comparativo de Viabilidad Técnica
 
-### Justificación Técnica
+| Herramienta | Consumo de CPU/RAM | Complejidad de Implementación | Idoneidad para BBC Mundo | Decisión |
+|---|---|---|---|---|
+| **Selenium** | Muy Alto (Lanza navegador headless completo). | Media-Alta | Excesivo. BBC Mundo entrega su contenido en el HTML estático inicial. | **Descartado** |
+| **Scrapy** | Medio (Framework asíncrono para crawling masivo). | Alta | Sobredimensionado para el volumen de extracción requerido. | **Descartado** |
+| **BeautifulSoup4** | **Extremadamente Bajo (Procesamiento nativo en memoria).** | **Baja-Media** | **Ideal.** BBC Mundo expone las noticias estructuradas directamente en el DOM plano. | **SELECCIONADO (Recomendado)** |
 
-#### Naturaleza de la Fuente
+### Justificación Técnica de BeautifulSoup:
+1. **HTML Estático:** Las tarjetas de noticias de BBC Mundo se cargan directamente desde el servidor sin requerir la ejecución de Javascript (Single Page Applications), haciendo innecesario el consumo de recursos de Selenium.
+2. **Eficiencia y Escalabilidad:** El scraper se ejecuta en fracciones de segundo y puede desplegarse en contenedores serverless ligeros de **Google Cloud Run** sin dependencias complejas de WebDrivers.
+3. **Pausas Éticas:** Facilidad para coordinar pausas de tiempo controladas (`time.sleep`) respetando las políticas de tráfico del servidor objetivo.
 
-Tras inspeccionar el DOM de:
+---
 
+# 3. Diseño y Arquitectura de la Clase Scraper (POO en Python)
+
+En cumplimiento con los estrictos criterios de la rúbrica de evaluación, el scraper está diseñado en su totalidad bajo el paradigma de **Programación Orientada a Objetos (POO)** en el archivo `src/scraper.py`, encapsulado en la clase `BBCMundoScraperPOO`.
+
+## 3.1 Estructura de la Clase `BBCMundoScraperPOO`
+
+```mermaid
+classDiagram
+    class BBCMundoScraperPOO {
+        +string base_url
+        +string topic_url
+        +dict headers
+        +string db_url
+        +create_engine engine
+        +__init__()
+        +obtener_sopa(url) BeautifulSoup
+        +extraer_listado_noticias() list
+        +extraer_cuerpo_articulo(url) tuple
+        +guardar_en_postgres(df_nuevas, tabla) void
+        +ejecutar_pipeline() void
+    }
+```
+
+### Detalle de Atributos y Métodos Críticos:
+* **`__init__()`:** Carga las variables de entorno utilizando `python-dotenv` para establecer una conexión segura a PostgreSQL mediante SQLAlchemy sin exponer credenciales en el código fuente.
+* **`obtener_sopa(url)`:** Realiza peticiones robustas con manejo de excepciones y cabeceras emuladas (`User-Agent`) para evitar bloqueos por seguridad (Error HTTP 403).
+* **`extraer_listado_noticias()`:** Escanea la página temática principal localizando las tarjetas de noticias mediante selectores adaptativos de tarjetas promocionales (`data-testid="promo"`).
+* **`extraer_cuerpo_articulo(url)`:** Navega de forma iterativa y autónoma a la URL específica de cada noticia para consolidar el texto plano del artículo (`data-component="text-block"`) y las etiquetas geográficas.
+* **`guardar_en_postgres()`:** Implementa el control de calidad e integridad de datos que evita la inserción de duplicados.
+
+---
+
+# 4. Modelado e Ingesta de Datos (Fase 4 CRISP-DM)
+
+## 4.1 Base de Datos Relacional PostgreSQL
+Los datos del scraper se almacenan en una base de datos relacional PostgreSQL corporativa, ideal para la integración en Power BI y el procesamiento del modelo SVM de Machine Learning.
+
+### Estructura Física de la Tabla `noticias_mercado`
+
+| Campo SQL | Tipo de Datos | Restricción / Propósito |
+|---|---|---|
+| **`id`** | SERIAL | Primary Key (Autoincremental). |
+| **`titulo`** | VARCHAR(255) | Título de la noticia. |
+| **`descripcion`** | TEXT | Resumen corto del contenido. |
+| **`fecha_publicacion`** | VARCHAR(50) | Metadata temporal de la noticia. |
+| **`texto_completo`** | TEXT | Cuerpo completo de la noticia (clave para el análisis NLP). |
+| **`temas_relacionados`** | VARCHAR(255) | Etiquetas de temas y países (ej: "Colombia", "Economía"). |
+| **`url`** | VARCHAR(255) | **UNIQUE** (Llave única de control de duplicación). |
+
+## 4.2 Lógica de Inserción y Prevención de Duplicados
+Para cumplir con el criterio de **Calidad del Código e Integridad**, la base de datos e ingesta valida las duplicidades antes de persistir en PostgreSQL:
+
+1. Se recuperan las URLs previamente almacenadas en PostgreSQL mediante una consulta optimizada: `SELECT url FROM noticias_mercado`.
+2. Se realiza una diferencia lógica de conjuntos en memoria usando Pandas utilizando la columna `url`.
+3. Solo se insertan en PostgreSQL las noticias nuevas que no existían previamente en la base de datos:
+   ```python
+   df_a_insertar = df_nuevas[~df_nuevas['url'].isin(urls_existentes)]
+   ```
+4. Se garantiza la atomicidad y velocidad de inserción masiva a través del método optimizado `to_sql(if_exists='append')` de Pandas y SQLAlchemy.
+
+---
+
+# 5. Evidencias de Ejecución y Pruebas de Validación
+
+El script se ejecutó exitosamente en el entorno del proyecto. A continuación se presentan las evidencias directas del log de consola del scraper:
+
+## 5.1 Registro de Ejecución del Pipeline ETL
 ```text
-https://www.bbc.com/mundo/topics/c7zp57yyz25t
+============================================================
+ INICIANDO PIPELINE DE SCRAPING - SHOPANALYTICS S.A.S.
+============================================================
+[*] Escaneando listado de noticias en: https://www.bbc.com/mundo/topics/c7zp57yyz25t
+[*] Se encontraron 48 tarjetas de noticias.
+
+[*] Extrayendo detalle de artículos (Preparación para modelo SVM)...
+  [1/24] Procesando: Muere el líder indígena Brooklyn Rivera ...
+  [2/24] Procesando: Quiénes son los principales candidatos p...
+  ...
+  [24/24] Procesando: Raúl Castro, el último gran símbolo de l...
+
+[*] Conectando a PostgreSQL para ingesta de datos...
+[*] Limpieza: 1 noticias ignoradas (Ya existen en PostgreSQL).
+[+] ÉXITO: 23 nuevos registros insertados en la tabla 'noticias_mercado'.
+============================================================
+ PIPELINE FINALIZADO CON ÉXITO
+============================================================
 ```
 
-Se comprobó que el contenido principal de las noticias se carga en el HTML estático inicial. No es estrictamente necesario ejecutar JavaScript en un navegador completo.
-
-#### Rendimiento y Eficiencia
-
-BeautifulSoup extrae la información en fracciones de segundo y consume mínimos recursos de CPU y RAM. Esto contrasta con Selenium, que requiere levantar un WebDriver completo, haciendo el proceso hasta 3 veces más lento y costoso a nivel computacional.
-
-#### Despliegue Cloud (Google Antigravity / Cloud Run)
-
-Al ejecutarse como un script Python nativo en entorno local, `requests` y `bs4` consumen mínimos recursos del sistema. Esto facilita también su eventual despliegue en servicios serverless como Google Cloud Run sin dependencias pesadas.
-
-## 2.2 Diseño del Scraper (Programación Orientada a Objetos - POO)
-
-Para cumplir con los estándares de Ingeniería de Software y facilitar la mantenibilidad, el scraper se desarrolló bajo el paradigma de **Programación Orientada a Objetos**.
-
-Se diseñó la clase `BBCMundoScraperPOO`, la cual encapsula:
-
-### Atributos
-
-- URLs base.
-- Headers (`User-Agent`) para evasión de bloqueos.
-- Motor de conexión a la base de datos (`SQLAlchemy engine`).
-
-### Métodos de Extracción
-
-- `obtener_sopa()`: Gestiona las peticiones HTTP con manejo de timeouts.
-- `extraer_listado_noticias()`: Identifica las tarjetas de noticias mediante los atributos `data-testid="promo"`.
-- `extraer_cuerpo_articulo()`: Navega iterativamente a cada URL extraída para recolectar el texto completo de los bloques `data-component="text-block"`.
-
-### Manejo de Obstáculos
-
-Se implementaron pausas éticas (`time.sleep`) para evitar bloqueos por **Rate Limiting** (Error HTTP 429) y se configuró un `User-Agent` que emula a Google Chrome de escritorio para evadir restricciones de seguridad (Error HTTP 403).
+### Análisis de las Evidencias:
+* **Efectividad de Extracción:** El scraper procesó de manera autónoma las **24 noticias principales** vigentes en el portal temático.
+* **Eficacia del Filtro de Duplicados:** Se detectó correctamente **1 noticia repetida** (ya persistida en una ejecución previa), ignorándola y evitando la polución de duplicados.
+* **Ingesta Exitosa:** Se persistieron **23 registros nuevos** con cuerpo completo y metadatos en la tabla física de PostgreSQL.
 
 ---
 
-# 3. Modelado e Ingesta de Datos (Fase 4 CRISP-DM)
+# 6. Manejo de Excepciones y Robustez
 
-## 3.1 Arquitectura de la Base de Datos (PostgreSQL)
-
-El script se conectó a una base de datos PostgreSQL mediante el ORM **SQLAlchemy** y el adaptador **psycopg2**. La elección de PostgreSQL se basa en su capacidad para manejar grandes volúmenes de texto (tipo `TEXT`) y su integración nativa con herramientas de visualización como Power BI.
-
-### Estructura de la Tabla `noticias_mercado`
-
-| Campo | Tipo |
-|---|---|
-| id | Serial, PK |
-| titulo | VARCHAR |
-| descripcion | TEXT |
-| fecha_publicacion | VARCHAR |
-| texto_completo | TEXT |
-| temas_relacionados | VARCHAR |
-| url | VARCHAR, UNIQUE |
-
-> `texto_completo` es el campo clave para el modelo SVM.
-
-## 3.2 Lógica de Ingesta y Prevención de Duplicados
-
-Para asegurar la calidad de los datos, el método `guardar_en_postgres()` implementa una validación tipo **Upsert** o filtrado previo:
-
-1. El script extrae las URLs de las noticias recién escrapeadas.
-2. Consulta la tabla `noticias_mercado` en PostgreSQL para obtener las URLs ya existentes.
-3. Se realiza una diferencia de conjuntos utilizando Pandas:
-
-```python
-df[~df['url'].isin(urls_existentes)]
-```
-
-4. Solo se ingieren (`df.to_sql(if_exists='append')`) los registros completamente nuevos, asegurando que ejecuciones diarias del script no generen redundancia.
-
----
-
-# 4. Pruebas, Validación y Documentación de Errores
-
-Durante el desarrollo se realizaron diversas pruebas unitarias y de integración:
-
-## Prueba de Extracción (Parsing)
-
-Se verificó que los selectores CSS extrajeran correctamente el contenido.
-
-**Problema detectado:** Algunos artículos de video no contenían bloques de texto estándar.  
-**Solución:** Se implementó un bloque `try-except` con condicionales para buscar la etiqueta `<main>` o `<article>` como método fallback.
-
-## Prueba de Conexión a Base de Datos
-
-Se forzó un error de credenciales para verificar la robustez del código.
-
-**Solución:** Implementación de variables de entorno (`.env`) para ocultar contraseñas y uso de manejadores de excepciones de SQLAlchemy.
-
-## Prueba de Duplicidad
-
-Se ejecutó el scraper dos veces consecutivas.
-
-- En la primera ejecución se insertaron 10 registros.
-- En la segunda, el log de consola confirmó:
-
-```text
-"Limpieza de duplicados: 10 registros ignorados. 0 nuevos registros insertados"
-```
-
-Esto validó exitosamente la lógica de integridad.
-
----
-
-# 5. Integración, CI/CD, Visualización y Despliegue (Google Antigravity)
-
-Para escalar esta solución desde un entorno local hacia un sistema empresarial, se estructuró el repositorio local con los siguientes componentes de integración:
-
-## 5.1 Estructura del Repositorio Local (Git)
-
-El proyecto se versiona localmente y se enlaza a GitHub con la siguiente estructura:
-
-```text
-/src/scraper.py             # Código principal del scraper (POO)
-/src/ingest_kaggle.py       # Ingesta de datos reales (Kaggle/Olist)
-/docs/                      # Documentación (Markdown y Notebooks)
-/data/                      # Archivos CSV de origen
-/.env                       # Variables de entorno (Credenciales PostgreSQL)
-/requirements.txt           # Dependencias
-/.github/workflows/main.yml # Pipeline CI/CD
-```
-
-### Dependencias Principales
-
-- pandas
-- beautifulsoup4
-- SQLAlchemy
-- psycopg2-binary
-
-## 5.2 CI/CD con GitHub Actions
-
-Se configuró un flujo de trabajo (**Workflow**) en GitHub Actions. Al realizar un `git push` a la rama `main`, se dispara un webhook interno que valida que el código Python cumple con los estándares **PEP-8** y verifica que el archivo de dependencias esté actualizado.
-
-## 5.3 Despliegue en GCP (Google Antigravity / Cloud Run)
-
-El proyecto se ejecuta en un entorno local y puede ser desplegado de forma ágil hacia Google Cloud Run utilizando la plataforma como servicio, sin gestionar servidores. Esto permite configurar un desencadenador (**Cloud Scheduler**) que ejecute el scraper de forma autónoma todos los días a las 6:00 AM, poblando la base de datos PostgreSQL alojada en **Cloud SQL**.
-
-## 5.4 Ingesta de Datos Transaccionales Reales (Kaggle)
-
-Para simular un entorno de producción realista para ShopAnalytics, se creó el script `src/ingest_kaggle.py`, el cual lee los datasets de comercio electrónico de Olist (Kaggle) desde la carpeta `data/` y los ingesta masivamente en PostgreSQL usando Pandas y SQLAlchemy. Estos datos reales permitirán un cruce analítico fidedigno con las noticias extraídas.
-
-## 5.5 Visualización en Power BI y Modelos SVM
-
-Una vez los datos fluyen de forma constante hacia PostgreSQL:
-
-### Power BI
-
-Se conectará vía **DirectQuery** a PostgreSQL. Se desarrollará un Dashboard que muestre la frecuencia de noticias por país (usando la columna `temas_relacionados`) y la asocie con las métricas de ventas de **ShopAnalytics S.A.S.**
-
-### Machine Learning (SVM)
-
-El campo `texto_completo` será tokenizado y vectorizado mediante **TF-IDF**.
-
-Posteriormente, un algoritmo de **Support Vector Machines (SVM)** clasificará la noticia en categorías de riesgo logístico, por ejemplo:
-
-- Riesgo de Transporte
-- Riesgo Cambiario
-- Normal
-
-Esto automatizará completamente la inteligencia de mercado de la compañía.
-
----
-
-# Conclusión
-
-Se logró implementar exitosamente la fase de preparación e ingesta de datos de la metodología **CRISP-DM**, superando los requerimientos mediante el uso de:
-
-- Programación Orientada a Objetos.
-- Bases de datos relacionales robustas (PostgreSQL).
-- Arquitectura preparada para MLOps y Cloud Computing.
-
-El proyecto quedó listo para futuras etapas de análisis avanzado, visualización y automatización mediante modelos de Machine Learning.
-
+El scraper cuenta con salvaguardas avanzadas para mitigar fallos durante ejecuciones prolongadas:
+* **Falta de Texto en Artículos (Páginas de Video/Galerías):** Si un artículo carece del componente estándar `data-component="text-block"`, el scraper cuenta con un fallback dinámico que busca la etiqueta `<main>` o `<article>`, evitando la generación de valores nulos o detenciones abruptas del script.
+* **Evasión de Bloqueos por Tráfico (Rate Limiting):** Implementación de una **Pausa Ética** de `1.5 segundos` entre peticiones, emulando la velocidad de navegación humana y reduciendo el riesgo de bloqueo de la dirección IP de origen.
+* **Control de Excepciones en Base de Datos:** Si ocurre un fallo en la conexión con PostgreSQL (ej. caída del servidor cloud), se captura el error y se imprime por consola de forma segura sin abortar catastróficamente otros procesos encolados en producción.
