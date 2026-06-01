@@ -13,5 +13,15 @@ venv/
 dist/
 build/
 
-# Archivos pesados de datos
+# Archivos pesados de datos y logs
 archive.zip
+data/
+archive/
+auditoria.txt
+*.sqlite
+*.db
+
+# Archivos exportados o temporales (EA3 y EA4)
+*.pbix
+*.pdf
+.vscode/
