@@ -32,6 +32,6 @@ try:
         
     cur.close()
     conn.close()
-    print(f"SUCCESS_PASSWORD_FOUND:{pwd}")
+    print("[OK] Conexión a PostgreSQL validada correctamente.")
 except Exception as e:
     print(f"Error al conectar con PostgreSQL o crear la base de datos: {e}")

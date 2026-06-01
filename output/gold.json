@@ -1,0 +1,81 @@
+{
+  "ambiente": "local",
+  "resumen": {
+    "total_transacciones": 14,
+    "ingresos_totales": 78310000.0,
+    "ticket_promedio": 5593571.428571428,
+    "registros_crudos": 17,
+    "registros_validos": 14,
+    "registros_descartados": 3,
+    "fecha_inicio": "2026-01-15 00:00:00",
+    "fecha_fin": "2026-03-20 00:00:00"
+  },
+  "ventas_ciudad": [
+    {
+      "ciudad": "Cali",
+      "total_ventas": 33350000.0,
+      "num_transacciones": 4
+    },
+    {
+      "ciudad": "Medellin",
+      "total_ventas": 28790000.0,
+      "num_transacciones": 5
+    },
+    {
+      "ciudad": "Bogota",
+      "total_ventas": 16170000.0,
+      "num_transacciones": 5
+    }
+  ],
+  "ventas_categoria": [
+    {
+      "categoria": "Tecnologia",
+      "total_ventas": 69600000.0,
+      "unidades_vendidas": 70.0
+    },
+    {
+      "categoria": "Muebles",
+      "total_ventas": 8710000.0,
+      "unidades_vendidas": 31.0
+    }
+  ],
+  "ventas_mes": [
+    {
+      "mes": "2026-01",
+      "total_ventas": 23250000.0,
+      "transacciones": 4
+    },
+    {
+      "mes": "2026-02",
+      "total_ventas": 19130000.0,
+      "transacciones": 5
+    },
+    {
+      "mes": "2026-03",
+      "total_ventas": 35930000.0,
+      "transacciones": 5
+    }
+  ],
+  "top_vendedores": [
+    {
+      "vendedor": "Ana Torres",
+      "total_ventas": 29250000.0,
+      "transacciones": 4
+    },
+    {
+      "vendedor": "Carlos Ruiz",
+      "total_ventas": 23670000.0,
+      "transacciones": 4
+    },
+    {
+      "vendedor": "Luis Garcia",
+      "total_ventas": 17140000.0,
+      "transacciones": 3
+    },
+    {
+      "vendedor": "Diana Lopez",
+      "total_ventas": 8250000.0,
+      "transacciones": 3
+    }
+  ]
+}

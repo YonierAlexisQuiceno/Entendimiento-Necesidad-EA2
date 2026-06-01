@@ -47,7 +47,7 @@ Se evaluaron tres tecnologías líderes para la recolección de datos: **Scrapy*
 
 # 3. Diseño y Arquitectura de la Clase Scraper (POO en Python)
 
-En cumplimiento con los estrictos criterios de la rúbrica de evaluación, el scraper está diseñado en su totalidad bajo el paradigma de **Programación Orientada a Objetos (POO)** en el archivo `src/scraper.py`, encapsulado en la clase `BBCMundoScraperPOO`.
+En cumplimiento con los estrictos criterios de la rúbrica de evaluación, el scraper está diseñado en su totalidad bajo el paradigma de **Programación Orientada a Objetos (POO)** en el archivo `src/scrapper.py`, encapsulado en la clase `BBCMundoScraperPOO`.
 
 ## 3.1 Estructura de la Clase `BBCMundoScraperPOO`
 
@@ -167,3 +167,13 @@ Para fortalecer la trazabilidad entre la necesidad del negocio, los datos extra�
   ORDER BY cantidad DESC LIMIT 3;
   ```
 * **Acción Directiva (Conexión con la decisión):** Identificar qué temas macroeconómicos (ej. huelgas portuarias, economía en ciertos países) dominan la actualidad para ajustar de manera proactiva los niveles de `punto_reorden` y stock de seguridad de productos importados.
+
+
+## Referencias
+
+* Wirth, R., & Hipp, J. (2000). *CRISP-DM: Towards a standard process model for data mining*. Proceedings of the 4th International Conference on the Practical Applications of Knowledge Discovery and Data Mining.
+* McKinney, W. (2012). *Python for Data Analysis*. O'Reilly Media.
+* Grinberg, M. (2018). *Flask Web Development: Developing Web Applications with Python*. O'Reilly Media.
+* Olist. (2018). *Brazilian E-Commerce Public Dataset by Olist*. Kaggle. Recuperado de https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+* BBC Mundo. (2024). *BBC News Mundo*. Recuperado de https://www.bbc.com/mundo
+* Python Software Foundation. (2024). *SQLAlchemy Documentation*. Recuperado de https://docs.sqlalchemy.org/

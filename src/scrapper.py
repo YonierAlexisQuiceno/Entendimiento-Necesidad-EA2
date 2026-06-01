@@ -20,7 +20,11 @@ class BBCMundoScraperPOO:
     def __init__(self):
         """Inicializa configuración del scraper y conexión a PostgreSQL."""
         self.base_url = "https://www.bbc.com"
-        self.topic_url = f"{self.base_url}/mundo/topics/c7zp57yyz25t"
+        self.topic_urls = [
+            f"{self.base_url}/mundo/topics/c7zp57yyz25t",  # Latinoamérica
+            f"{self.base_url}/mundo/topics/c06gq9v4xp3t",  # Economía
+            f"{self.base_url}/mundo/topics/c2lej05epw5t",  # Internacional
+        ]
 
         # Headers para evitar bloqueo (Error 403)
         self.headers = {
@@ -51,43 +55,44 @@ class BBCMundoScraperPOO:
             return None
 
     def extraer_listado_noticias(self):
-        """Extrae la metadata básica de la página de inicio del topic."""
-        print(f"[*] Escaneando listado de noticias en: {self.topic_url}")
-        soup = self.obtener_sopa(self.topic_url)
-        if not soup:
-            return []
-
+        """Extrae la metadata básica de la página de inicio de múltiples topics."""
         noticias = []
-        # Buscar tarjetas con el tag data-testid="promo"
-        promos = soup.find_all("div", attrs={"data-testid": lambda value: value and "promo" in value})
+        for url in self.topic_urls:
+            print(f"\n[*] Escaneando listado de noticias en: {url}")
+            soup = self.obtener_sopa(url)
+            if not soup:
+                continue
 
-        # Fallback por si la estructura cambia
-        if not promos:
-            promos = soup.find_all(["article", "div"], class_=lambda c: c and "promo" in c)
+            # Buscar tarjetas con el tag data-testid="promo"
+            promos = soup.find_all("div", attrs={"data-testid": lambda value: value and "promo" in value})
 
-        print(f"[*] Se encontraron {len(promos)} tarjetas de noticias.")
+            # Fallback por si la estructura cambia
+            if not promos:
+                promos = soup.find_all(["article", "div"], class_=lambda c: c and "promo" in c)
 
-        for promo in promos:
-            noticia = {}
+            print(f"  -> Se encontraron {len(promos)} tarjetas de noticias en esta sección.")
 
-            titulo_tag = promo.find(["h2", "h3"])
-            noticia["titulo"] = titulo_tag.get_text(strip=True) if titulo_tag else None
+            for promo in promos:
+                noticia = {}
 
-            desc_tag = promo.find("p")
-            noticia["descripcion"] = desc_tag.get_text(strip=True) if desc_tag else "Sin descripción"
+                titulo_tag = promo.find(["h2", "h3"])
+                noticia["titulo"] = titulo_tag.get_text(strip=True) if titulo_tag else None
 
-            time_tag = promo.find("time")
-            noticia["fecha_publicacion"] = time_tag.get_text(strip=True) if time_tag else "Fecha desconocida"
+                desc_tag = promo.find("p")
+                noticia["descripcion"] = desc_tag.get_text(strip=True) if desc_tag else "Sin descripción"
 
-            link_tag = promo.find("a", href=True)
-            if link_tag:
-                href = link_tag["href"]
-                noticia["url"] = self.base_url + href if href.startswith("/") else href
-            else:
-                noticia["url"] = None
+                time_tag = promo.find("time")
+                noticia["fecha_publicacion"] = time_tag.get_text(strip=True) if time_tag else "Fecha desconocida"
 
-            if noticia["titulo"] and noticia["url"]:
-                noticias.append(noticia)
+                link_tag = promo.find("a", href=True)
+                if link_tag:
+                    href = link_tag["href"]
+                    noticia["url"] = self.base_url + href if href.startswith("/") else href
+                else:
+                    noticia["url"] = None
+
+                if noticia["titulo"] and noticia["url"]:
+                    noticias.append(noticia)
 
         return noticias
 
@@ -105,15 +110,28 @@ class BBCMundoScraperPOO:
 
         texto_completo = "\n".join(b.get_text(strip=True) for b in bloques)
 
-        # Extraer etiquetas (Tags)
+        # Extraer etiquetas (Tags / Topics)
         temas = []
+        # Estrategia 1: Links con clase que contenga "topic" o "tag"
         temas_links = soup.find_all("a", class_=lambda c: c and ("topic" in c or "tag" in c))
+        # Estrategia 2: Links dentro de secciones de navegación de topics
+        if not temas_links:
+            nav = soup.find("nav") or soup.find("div", attrs={"data-testid": lambda v: v and "topic" in v.lower()}) if soup else None
+            temas_links = nav.find_all("a") if nav else []
+        # Estrategia 3: Extraer de la URL del artículo (ej: /mundo/noticias-america-latina-...)
+        if not temas_links and url:
+            partes = url.replace("https://www.bbc.com/mundo/", "").split("-")
+            # Tomar las primeras palabras descriptivas del slug
+            slug_temas = [p.capitalize() for p in partes[:3] if not p.isdigit() and len(p) > 2]
+            if slug_temas:
+                temas = slug_temas
+
         for t in temas_links:
             tema_txt = t.get_text(strip=True)
-            if tema_txt not in temas:
+            if tema_txt and tema_txt not in temas and len(tema_txt) > 1:
                 temas.append(tema_txt)
 
-        return texto_completo, ", ".join(temas)
+        return texto_completo, ", ".join(temas) if temas else "General"
 
     def guardar_en_postgres(self, df_nuevas, tabla="noticias_mercado"):
         """Ingesta el DataFrame en PostgreSQL evitando duplicidad de URLs."""

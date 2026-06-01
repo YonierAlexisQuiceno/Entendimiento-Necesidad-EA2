@@ -1,6 +1,6 @@
 @echo off
 echo ========================================================
-echo   FASE 2: EJECUCION DIARIA DEL PROYECTO (EA1 y EA2)
+echo   EJECUCION COMPLETA DEL PROYECTO (EA1, EA2 y EA3)
 echo ========================================================
 echo.
 
@@ -21,8 +21,12 @@ echo --- 1. Ejecutando Entrega 1 (Transaccional SQLite) ---
 python src\ea1.py
 
 echo.
-echo --- 2. Ejecutando Entrega 2 (Scraper BBC - PostgreSQL) ---
-python src\scraper.py
+echo --- 2. Ejecutando Entrega 2 (Scrapper BBC - PostgreSQL) ---
+python src\scrapper.py
+
+echo.
+echo --- 3. Ejecutando Entrega 3 (Modelo NLP y Enriquecimiento) ---
+python src\ejecucion.py
 
 echo.
 echo ========================================================

@@ -44,4 +44,30 @@ if __name__ == "__main__":
     ingestar_csv("olist_products_dataset.csv", "productos")
     ingestar_csv("olist_orders_dataset.csv", "ordenes")
     ingestar_csv("olist_order_items_dataset.csv", "items_orden")
+    
+    print("\n[ENRIQUECIMIENTO] Creando vista analítica vw_olist_clientes_vip...")
+    from sqlalchemy import text
+    vista_sql = """
+    CREATE OR REPLACE VIEW vw_olist_clientes_vip AS
+    SELECT 
+        c.customer_id,
+        c.customer_city,
+        c.customer_state,
+        COUNT(o.order_id) as total_ordenes,
+        CASE 
+            WHEN COUNT(o.order_id) > 1 THEN 'VIP'
+            ELSE 'Estandar'
+        END as categoria_cliente
+    FROM clientes c
+    LEFT JOIN ordenes o ON c.customer_id = o.customer_id
+    GROUP BY c.customer_id, c.customer_city, c.customer_state;
+    """
+    try:
+        with engine.connect() as conn:
+            conn.execute(text(vista_sql))
+            conn.commit()
+        print("[+] Vista vw_olist_clientes_vip generada en PostgreSQL.")
+    except Exception as e:
+        print(f"[ERROR] No se pudo crear la vista: {e}")
+        
     print("Ingesta completada.")

@@ -229,3 +229,13 @@ Para conectar directamente la información técnica con la estrategia directiva 
 * **Código de Ejecución Consolidado:** `src/ea1.py`
 * **Base de Datos Local Generada:** `shopanalytics.db`
 * **Jupyter Notebook Mejorado:** `docs/Quiceno_Rodriguez_Yonier_Alexis_Entendimiento_Necesidad_EA1_Mejorado.ipynb`
+
+
+## Referencias
+
+* Wirth, R., & Hipp, J. (2000). *CRISP-DM: Towards a standard process model for data mining*. Proceedings of the 4th International Conference on the Practical Applications of Knowledge Discovery and Data Mining.
+* McKinney, W. (2012). *Python for Data Analysis*. O'Reilly Media.
+* Grinberg, M. (2018). *Flask Web Development: Developing Web Applications with Python*. O'Reilly Media.
+* Olist. (2018). *Brazilian E-Commerce Public Dataset by Olist*. Kaggle. Recuperado de https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+* BBC Mundo. (2024). *BBC News Mundo*. Recuperado de https://www.bbc.com/mundo
+* Python Software Foundation. (2024). *SQLAlchemy Documentation*. Recuperado de https://docs.sqlalchemy.org/

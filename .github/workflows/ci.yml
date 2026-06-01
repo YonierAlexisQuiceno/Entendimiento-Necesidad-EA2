@@ -31,6 +31,6 @@ jobs:
       run: |
         # Verificamos que los archivos principales se puedan compilar sin errores de sintaxis
         python -m py_compile src/ea1.py
-        python -m py_compile src/scraper.py
+        python -m py_compile src/scrapper.py
         python -m py_compile src/modelo.py
         python -m py_compile src/ejecucion.py

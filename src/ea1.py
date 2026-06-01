@@ -305,7 +305,11 @@ query_reabastecimiento = '''
     ORDER BY Deficit_a_Pedir DESC;
 '''
 df_reabast = pd.read_sql_query(query_reabastecimiento, conn)
+
+# ENRIQUECIMIENTO DE DATOS SIMULADOS
 if not df_reabast.empty:
+    df_reabast['Prioridad_Compra'] = np.where(df_reabast['Deficit_a_Pedir'] > 10, 'Alta', 'Media')
+    df_reabast.to_sql('Productos_Enriquecidos', conn, if_exists='replace', index=False)
     print(df_reabast.to_string(index=False))
 else:
     print("  -> Todos los productos se encuentran por encima de los niveles de seguridad de inventario.")
