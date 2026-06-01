@@ -146,3 +146,24 @@ El scraper cuenta con salvaguardas avanzadas para mitigar fallos durante ejecuci
 * **Falta de Texto en Artículos (Páginas de Video/Galerías):** Si un artículo carece del componente estándar `data-component="text-block"`, el scraper cuenta con un fallback dinámico que busca la etiqueta `<main>` o `<article>`, evitando la generación de valores nulos o detenciones abruptas del script.
 * **Evasión de Bloqueos por Tráfico (Rate Limiting):** Implementación de una **Pausa Ética** de `1.5 segundos` entre peticiones, emulando la velocidad de navegación humana y reduciendo el riesgo de bloqueo de la dirección IP de origen.
 * **Control de Excepciones en Base de Datos:** Si ocurre un fallo en la conexión con PostgreSQL (ej. caída del servidor cloud), se captura el error y se imprime por consola de forma segura sin abortar catastróficamente otros procesos encolados en producción.
+
+---
+
+# 7. Trazabilidad Analítica y Toma de Decisiones
+
+Para fortalecer la trazabilidad entre la necesidad del negocio, los datos extraídos y las decisiones operativas, se ha implementado el método `ejecutar_consultas_analiticas()` que se ejecuta automáticamente tras la ingesta en PostgreSQL.
+
+## 7.1. Validaciones de Integridad
+* **Conteo Total de Registros:** Se consulta físicamente la tabla `noticias_mercado` con `SELECT COUNT(*) AS total FROM noticias_mercado` para certificar la persistencia real de los datos y proveer evidencia de ejecución de la base de datos más allá del log del scraper.
+
+## 7.2. Consulta Analítica: Riesgos Latentes por Temática
+* **Objetivo de Negocio:** Prevenir demoras en la cadena de suministro internacional e importaciones.
+* **Consulta SQL:**
+  ```sql
+  SELECT temas_relacionados, COUNT(*) as cantidad 
+  FROM noticias_mercado 
+  WHERE temas_relacionados IS NOT NULL AND temas_relacionados != ''
+  GROUP BY temas_relacionados 
+  ORDER BY cantidad DESC LIMIT 3;
+  ```
+* **Acción Directiva (Conexión con la decisión):** Identificar qué temas macroeconómicos (ej. huelgas portuarias, economía en ciertos países) dominan la actualidad para ajustar de manera proactiva los niveles de `punto_reorden` y stock de seguridad de productos importados.

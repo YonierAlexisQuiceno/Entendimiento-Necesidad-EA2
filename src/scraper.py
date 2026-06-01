@@ -141,6 +141,35 @@ class BBCMundoScraperPOO:
         except Exception as e:
             print(f"[ERROR CRÍTICO] Fallo en la conexión/inserción a PostgreSQL: {e}")
 
+    def ejecutar_consultas_analiticas(self):
+        """Ejecuta consultas analíticas alineadas con el objetivo del negocio y valida la integridad."""
+        print("\n" + "="*60)
+        print("[ANÁLISIS] VALIDACIONES Y CONSULTAS ANALÍTICAS (POSTGRESQL)")
+        print("="*60)
+        try:
+            with self.engine.connect() as conn:
+                # 1. Validación de Integridad (Conteo Total)
+                total = pd.read_sql("SELECT COUNT(*) AS total FROM noticias_mercado", conn).iloc[0]['total']
+                print(f"[*] Evidencia de Ejecución: {total} noticias totales almacenadas en la base de datos.")
+                
+                # 2. Análisis A: Riesgos Latentes por Temática
+                # Decisión: Identificar qué temas macroeconómicos o políticos dominan la actualidad
+                # para ajustar las previsiones de importación y logística.
+                print("\n[CONSULTA A] Concentración de Noticias por Temática (Riesgo Logístico)")
+                query_temas = """
+                    SELECT temas_relacionados, COUNT(*) as cantidad 
+                    FROM noticias_mercado 
+                    WHERE temas_relacionados IS NOT NULL AND temas_relacionados != ''
+                    GROUP BY temas_relacionados 
+                    ORDER BY cantidad DESC LIMIT 3
+                """
+                df_temas = pd.read_sql(query_temas, conn)
+                print("Decisión Directiva: Monitorear alertas en las siguientes regiones/temas para prevenir demoras en cadena de suministro.")
+                print(df_temas.to_string(index=False))
+                
+        except Exception as e:
+            print(f"[ERROR] No se pudieron ejecutar las consultas analíticas: {e}")
+
     def ejecutar_pipeline(self):
         """Método principal que orquesta todo el flujo ETL."""
         print("="*60)
@@ -163,6 +192,9 @@ class BBCMundoScraperPOO:
         # Conectar e Ingestar en PostgreSQL
         print("\n[*] Conectando a PostgreSQL para ingesta de datos...")
         self.guardar_en_postgres(df_final)
+        
+        # Validaciones de Integridad y Consultas Analíticas (Alineación con Objetivos)
+        self.ejecutar_consultas_analiticas()
 
         print("="*60)
         print(" PIPELINE FINALIZADO CON ÉXITO")

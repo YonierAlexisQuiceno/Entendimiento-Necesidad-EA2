@@ -325,7 +325,7 @@ query_overstock = '''
     FROM Productos p
     LEFT JOIN Detalle_Ventas d ON p.producto_id = d.producto_id
     GROUP BY p.producto_id
-    HAVING Unidades_Vendidas < 50 AND Stock_Almacenado > 50
+    HAVING Unidades_Vendidas < 15 AND Stock_Almacenado > 50
     ORDER BY Stock_Almacenado DESC;
 '''
 df_over = pd.read_sql_query(query_overstock, conn)

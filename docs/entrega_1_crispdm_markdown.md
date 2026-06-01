@@ -1,3 +1,7 @@
+---
+marp: true
+---
+
 # S30 - Entrega 1: Entendimiento de la Necesidad EA1 (Mejorado)
 
 **Estudiante:** Yonier Alexis Quiceno Rodríguez  
