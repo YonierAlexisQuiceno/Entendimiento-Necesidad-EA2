@@ -1,0 +1,82 @@
+table 'public items_orden'
+	lineageTag: d716f7fc-688a-4949-b10b-c6bef9af7faa
+
+	column order_id
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 17e97901-9f9a-401f-b246-1174b00fe515
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_item_id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 972582df-6101-42d0-a8db-fab26c2675ee
+		summarizeBy: sum
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: b4904afa-1ee4-43bb-b272-ee8fe443b956
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_id
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 985561b0-349b-4947-ae7e-14e455c4d7bd
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipping_limit_date
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 290ebb6d-fb41-4583-b423-62cfffae3222
+		summarizeBy: none
+		sourceColumn: shipping_limit_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column price
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 8fc19ebd-1f33-4af9-a5a5-639b0507ad4c
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column freight_value
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 994c97d6-310d-439c-bf5e-98533f025ecd
+		summarizeBy: sum
+		sourceColumn: freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'public items_orden' = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("localhost", "shopanalytics"),
+				    public_items_orden = Origen{[Schema="public",Item="items_orden"]}[Data]
+				in
+				    public_items_orden
+
+	annotation PBI_ResultType = Table
+

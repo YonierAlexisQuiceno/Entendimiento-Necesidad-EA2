@@ -1,0 +1,85 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "30192be56b76ac6c957d",
+  "position": {
+    "x": 0,
+    "y": 138.57142857142858,
+    "z": 0,
+    "height": 280,
+    "width": 380,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "pieChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public vw_riesgo_logistico"
+                    }
+                  },
+                  "Property": "temas_relacionados"
+                }
+              },
+              "queryRef": "public vw_riesgo_logistico.temas_relacionados",
+              "nativeQueryRef": "temas_relacionados",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "public vw_riesgo_logistico"
+                        }
+                      },
+                      "Property": "titulo"
+                    }
+                  },
+                  "Function": 5
+                }
+              },
+              "queryRef": "CountNonNull(public vw_riesgo_logistico.titulo)",
+              "nativeQueryRef": "Recuento de titulo"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public vw_riesgo_logistico"
+                      }
+                    },
+                    "Property": "titulo"
+                  }
+                },
+                "Function": 5
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

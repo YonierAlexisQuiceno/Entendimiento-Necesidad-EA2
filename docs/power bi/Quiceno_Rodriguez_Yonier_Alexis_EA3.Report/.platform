@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Quiceno_Rodriguez_Yonier_Alexis_EA3"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "84f6584c-44a4-46ac-beee-f1c350eec422"
+  }
+}

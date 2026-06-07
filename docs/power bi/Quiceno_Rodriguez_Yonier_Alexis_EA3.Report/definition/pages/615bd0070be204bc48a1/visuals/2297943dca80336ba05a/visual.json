@@ -1,0 +1,66 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "2297943dca80336ba05a",
+  "position": {
+    "x": 658.57142857142867,
+    "y": 138.57142857142858,
+    "z": 2,
+    "height": 281.42857142857144,
+    "width": 244.28571428571431,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "public vw_riesgo_logistico"
+                        }
+                      },
+                      "Property": "score_riesgo"
+                    }
+                  },
+                  "Function": 1
+                }
+              },
+              "queryRef": "Sum(public vw_riesgo_logistico.score_riesgo)",
+              "nativeQueryRef": "Promedio de score_riesgo"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Aggregation": {
+                "Expression": {
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "public vw_riesgo_logistico"
+                      }
+                    },
+                    "Property": "score_riesgo"
+                  }
+                },
+                "Function": 1
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

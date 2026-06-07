@@ -1,0 +1,86 @@
+table 'public ordenes'
+	lineageTag: 827761f7-16ab-4f37-a637-3de61eaf53a4
+
+	column order_id
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: a3216db5-beda-4e22-ab9b-715b669f85c5
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: bb2b68dc-f727-4341-9856-3b20b51b7020
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 489ba1b3-758c-497f-abca-a45092fd7cf8
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_purchase_timestamp
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 247766b5-c022-499d-8d62-fa68c1e87d0f
+		summarizeBy: none
+		sourceColumn: order_purchase_timestamp
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_approved_at
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: f15b3554-5dc7-4717-9c0a-5c7158ea7e1f
+		summarizeBy: none
+		sourceColumn: order_approved_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_delivered_carrier_date
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: bfbda8d9-09ab-4636-8139-34a5e55e4ce3
+		summarizeBy: none
+		sourceColumn: order_delivered_carrier_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_delivered_customer_date
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: f917b1bc-e662-4fac-858c-96686091d131
+		summarizeBy: none
+		sourceColumn: order_delivered_customer_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_estimated_delivery_date
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 0781c57e-a747-4ff1-abc7-17c4dff386f5
+		summarizeBy: none
+		sourceColumn: order_estimated_delivery_date
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public ordenes' = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("localhost", "shopanalytics"),
+				    public_ordenes = Origen{[Schema="public",Item="ordenes"]}[Data]
+				in
+				    public_ordenes
+
+	annotation PBI_ResultType = Table
+

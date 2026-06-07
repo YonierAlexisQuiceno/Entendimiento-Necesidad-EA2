@@ -1,0 +1,66 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "name": "39f8cabe766417043d60",
+  "position": {
+    "x": 0,
+    "y": 440,
+    "z": 3,
+    "height": 280,
+    "width": 677.14285714285722,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public noticias_enriquecidas"
+                    }
+                  },
+                  "Property": "fecha_publicacion"
+                }
+              },
+              "queryRef": "public noticias_enriquecidas.fecha_publicacion",
+              "nativeQueryRef": "fecha_publicacion"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public noticias_enriquecidas"
+                    }
+                  },
+                  "Property": "nivel_riesgo"
+                }
+              },
+              "queryRef": "public noticias_enriquecidas.nivel_riesgo",
+              "nativeQueryRef": "nivel_riesgo"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public noticias_enriquecidas"
+                    }
+                  },
+                  "Property": "titulo"
+                }
+              },
+              "queryRef": "public noticias_enriquecidas.titulo",
+              "nativeQueryRef": "titulo"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

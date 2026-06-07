@@ -1,0 +1,32 @@
+relationship fd9f3139-b1b4-80cb-fc11-acf5fc2c86c3
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: 'public clientes'.customer_id
+	toColumn: 'public ordenes'.customer_id
+
+relationship deb92c22-7d3f-3d67-9697-e106a66636aa
+	fromColumn: 'public items_orden'.order_id
+	toColumn: 'public ordenes'.order_id
+
+relationship 49ae9639-fd83-54e4-9381-d7f0de2e2a94
+	fromColumn: 'public items_orden'.product_id
+	toColumn: 'public productos'.product_id
+
+relationship 6e559393-3f15-8be0-a849-02ec97575ee0
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: 'public vw_olist_clientes_vip'.customer_id
+	toColumn: 'public clientes'.customer_id
+
+relationship a2cc4ffd-96f7-25b9-9ecf-22970398af58
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'public vw_riesgo_logistico'.titulo
+	toColumn: 'public noticias_enriquecidas'.titulo
+
+relationship f70b64c9-40c2-619f-25b0-f32cfaf96757
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: 'public noticias_enriquecidas'.titulo
+	toColumn: 'public noticias_mercado'.titulo
+

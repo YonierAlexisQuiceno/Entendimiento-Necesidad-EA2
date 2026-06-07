@@ -1,0 +1,126 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 8.563466895026334
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 1049.7233291899724,
+            "y": 329.1716261688083
+          },
+          "nodeIndex": "public clientes",
+          "nodeLineageTag": "db95d2f3-f95c-47bd-aa23-81ef9788376c",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 320.30866686787112,
+            "y": 335.97112226760021
+          },
+          "nodeIndex": "public items_orden",
+          "nodeLineageTag": "d716f7fc-688a-4949-b10b-c6bef9af7faa",
+          "size": {
+            "height": 263.50266461962792,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 683.85968784824331,
+            "y": 6.2102996791325822
+          },
+          "nodeIndex": "public noticias_enriquecidas",
+          "nodeLineageTag": "c72eedd3-0efd-4a08-9a58-0e85c83085ed",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 316.33179082149928,
+            "y": 12.969623503253843
+          },
+          "nodeIndex": "public noticias_mercado",
+          "nodeLineageTag": "9a44fc17-5ffc-4dd0-ae5f-dfbbee90b720",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 689.20615737101571,
+            "y": 321.01675311095988
+          },
+          "nodeIndex": "public ordenes",
+          "nodeLineageTag": "827761f7-16ab-4f37-a637-3de61eaf53a4",
+          "size": {
+            "height": 310.05199497545016,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 307.23462609807871,
+            "y": 660.43398859412412
+          },
+          "nodeIndex": "public productos",
+          "nodeLineageTag": "bc64ba9e-7f80-4b08-8cb3-5c7ffe510a83",
+          "size": {
+            "height": 303.04666573619443,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 1033.997900968413,
+            "y": 655.95421705320109
+          },
+          "nodeIndex": "public vw_olist_clientes_vip",
+          "nodeLineageTag": "09796d76-f4f9-4946-a822-b89dc7687b44",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 1057.6794343020185,
+            "y": 9.8653320306722527
+          },
+          "nodeIndex": "public vw_riesgo_logistico",
+          "nodeLineageTag": "abaf08eb-69df-4e94-be5f-0d7a3e907780",
+          "size": {
+            "height": 263.50266461962781,
+            "width": 234
+          },
+          "zIndex": 5
+        }
+      ],
+      "name": "Todas las tablas",
+      "zoomValue": 70.955543900968934,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Todas las tablas",
+  "defaultDiagram": "Todas las tablas"
+}

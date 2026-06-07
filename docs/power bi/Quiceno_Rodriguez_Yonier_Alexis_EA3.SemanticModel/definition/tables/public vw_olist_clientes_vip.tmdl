@@ -1,0 +1,60 @@
+table 'public vw_olist_clientes_vip'
+	lineageTag: 09796d76-f4f9-4946-a822-b89dc7687b44
+
+	column customer_id
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 6c5b6212-9f08-4b71-9495-6cb0f2ddde8a
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_city
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 8ada17be-4e39-4fe8-84f4-95bfaeee2ff9
+		summarizeBy: none
+		sourceColumn: customer_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_state
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: db9818a8-c306-44e9-aac0-0199032db76d
+		summarizeBy: none
+		sourceColumn: customer_state
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_ordenes
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: d337d0a8-c58f-425d-9f1e-9d1f8ac6c78e
+		summarizeBy: sum
+		sourceColumn: total_ordenes
+
+		annotation SummarizationSetBy = Automatic
+
+	column categoria_cliente
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 45e1f7cb-bbde-47d3-aafd-e9e5ddcd4caf
+		summarizeBy: none
+		sourceColumn: categoria_cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public vw_olist_clientes_vip' = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("localhost", "shopanalytics"),
+				    public_vw_olist_clientes_vip = Origen{[Schema="public",Item="vw_olist_clientes_vip"]}[Data]
+				in
+				    public_vw_olist_clientes_vip
+
+	annotation PBI_ResultType = Table
+

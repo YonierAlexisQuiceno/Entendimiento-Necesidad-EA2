@@ -93,15 +93,15 @@ Para que el pipeline de CD pueda desplegar el dashboard directamente sin usar ra
 2. En la sección **Build and deployment > Source**, selecciona **GitHub Actions** en el menú desplegable (en lugar de *Deploy from a branch*).
 3. No es necesario seleccionar nada más. El flujo de CD nativo en `.github/workflows/cd.yml` se encargará de configurar y publicar el sitio automáticamente en cada push a `main`.
 
-### Paso 2.4: Configurar la Protección de Ramas (Manual)
-Para garantizar que nadie realice cambios directos en las ramas del pipeline sin antes pasar por el flujo de Pull Request y validación de CI:
+### Paso 2.4: Configurar la Protección de Ramas (Opcional)
+Si deseas garantizar que nadie realice cambios directos en las ramas del pipeline sin antes pasar por el flujo de Pull Request y validación de CI, puedes configurar esto (aunque para pruebas individuales no es estrictamente necesario):
 1. Ve a **Settings** > **Branches** (menú lateral izquierdo, sección *Code and automation*).
 2. En la sección **Branch protection rules**, haz clic en **Add branch protection rule** (Añadir regla de protección de rama).
 3. Configura la regla para la rama `main`:
    - **Branch name pattern:** `main`
    - Activa **Require a pull request before merging** (Requerir un pull request antes de fusionar).
    - Activa **Require approvals** y selecciona `1` en el número de aprobaciones requeridas.
-   - **IMPORTANTE:** Deja **desactivada** la opción *Do not bypass the above settings* (enforce_admins). Esto permite que el administrador o dueño del repositorio pueda forzar la fusión mediante bypass de administrador en sus pruebas de aprendizaje individuales.
+   - **IMPORTANTE:** Deja **desactivada** la opción *Do not bypass the above settings* (enforce_admins).
 4. Haz clic en **Create** (Crear).
 5. Repite el mismo proceso (pasos 3 y 4) creando una regla para la rama `dev` y otra para la rama `qa`.
 

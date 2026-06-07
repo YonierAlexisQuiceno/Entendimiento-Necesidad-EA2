@@ -7,6 +7,7 @@ de datos PostgreSQL validando duplicados. Diseñado para ejecutarse en Cloud Run
 
 import os
 import time
+import logging
 import requests
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -15,6 +16,12 @@ from dotenv import load_dotenv
 
 # Cargar variables de entorno desde el archivo .env local
 load_dotenv()
+
+# Configuración de Logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 class BBCMundoScraperPOO:
     def __init__(self):
@@ -51,7 +58,7 @@ class BBCMundoScraperPOO:
             response.raise_for_status()
             return BeautifulSoup(response.text, "lxml")
         except requests.exceptions.RequestException as e:
-            print(f"[ERROR] Fallo al acceder a {url}: {e}")
+            logging.error(f"[ERROR] Fallo al acceder a {url}: {e}")
             return None
 
     def extraer_listado_noticias(self):
@@ -70,7 +77,7 @@ class BBCMundoScraperPOO:
             if not promos:
                 promos = soup.find_all(["article", "div"], class_=lambda c: c and "promo" in c)
 
-            print(f"  -> Se encontraron {len(promos)} tarjetas de noticias en esta sección.")
+            logging.info(f"  -> Se encontraron {len(promos)} tarjetas de noticias en esta sección.")
 
             for promo in promos:
                 noticia = {}
@@ -150,28 +157,28 @@ class BBCMundoScraperPOO:
             duplicados = len(df_nuevas) - len(df_a_insertar)
 
             if duplicados > 0:
-                print(f"[*] Limpieza: {duplicados} noticias ignoradas (Ya existen en PostgreSQL).")
+                logging.info(f"[*] Limpieza: {duplicados} noticias ignoradas (Ya existen en PostgreSQL).")
 
             if not df_a_insertar.empty:
                 # Inserción en PostgreSQL
                 df_a_insertar.to_sql(tabla, self.engine, if_exists='append', index=False)
-                print(f"[+] ÉXITO: {len(df_a_insertar)} nuevos registros insertados en la tabla '{tabla}'.")
+                logging.info(f"[+] ÉXITO: {len(df_a_insertar)} nuevos registros insertados en la tabla '{tabla}'.")
             else:
-                print("[-] No hay noticias nuevas para ingestar en este momento.")
+                logging.info("[-] No hay noticias nuevas para ingestar en este momento.")
 
         except Exception as e:
-            print(f"[ERROR CRÍTICO] Fallo en la conexión/inserción a PostgreSQL: {e}")
+            logging.error(f"[ERROR CRÍTICO] Fallo en la conexión/inserción a PostgreSQL: {e}")
 
     def ejecutar_consultas_analiticas(self):
         """Ejecuta consultas analíticas alineadas con el objetivo del negocio y valida la integridad."""
         print("\n" + "="*60)
-        print("[ANÁLISIS] VALIDACIONES Y CONSULTAS ANALÍTICAS (POSTGRESQL)")
-        print("="*60)
+        logging.info("[ANÁLISIS] VALIDACIONES Y CONSULTAS ANALÍTICAS (POSTGRESQL)")
+        logging.info("="*60)
         try:
             with self.engine.connect() as conn:
                 # 1. Validación de Integridad (Conteo Total)
                 total = pd.read_sql("SELECT COUNT(*) AS total FROM noticias_mercado", conn).iloc[0]['total']
-                print(f"[*] Evidencia de Ejecución: {total} noticias totales almacenadas en la base de datos.")
+                logging.info(f"[*] Evidencia de Ejecución: {total} noticias totales almacenadas en la base de datos.")
                 
                 # 2. Análisis A: Riesgos Latentes por Temática
                 # Decisión: Identificar qué temas macroeconómicos o políticos dominan la actualidad
@@ -185,23 +192,23 @@ class BBCMundoScraperPOO:
                     ORDER BY cantidad DESC LIMIT 3
                 """
                 df_temas = pd.read_sql(query_temas, conn)
-                print("Decisión Directiva: Monitorear alertas en las siguientes regiones/temas para prevenir demoras en cadena de suministro.")
-                print(df_temas.to_string(index=False))
+                logging.info("Decisión Directiva: Monitorear alertas en las siguientes regiones/temas para prevenir demoras en cadena de suministro.")
+                logging.info("\n" + df_temas.to_string(index=False))
                 
         except Exception as e:
-            print(f"[ERROR] No se pudieron ejecutar las consultas analíticas: {e}")
+            logging.error(f"[ERROR] No se pudieron ejecutar las consultas analíticas: {e}")
 
     def ejecutar_pipeline(self):
         """Método principal que orquesta todo el flujo ETL."""
-        print("="*60)
-        print(" INICIANDO PIPELINE DE SCRAPING - SHOPANALYTICS S.A.S.")
-        print("="*60)
+        logging.info("="*60)
+        logging.info(" INICIANDO PIPELINE DE SCRAPING - SHOPANALYTICS S.A.S.")
+        logging.info("="*60)
 
         lista_basica = self.extraer_listado_noticias()
 
         print("\n[*] Extrayendo detalle de artículos (Preparación para modelo SVM)...")
         for i, noticia in enumerate(lista_basica):
-            print(f"  [{i+1}/{len(lista_basica)}] Procesando: {noticia['titulo'][:40]}...")
+            logging.info(f"  [{i+1}/{len(lista_basica)}] Procesando: {noticia['titulo'][:40]}...")
             texto, temas = self.extraer_cuerpo_articulo(noticia["url"])
             noticia["texto_completo"] = texto
             noticia["temas_relacionados"] = temas
@@ -217,9 +224,9 @@ class BBCMundoScraperPOO:
         # Validaciones de Integridad y Consultas Analíticas (Alineación con Objetivos)
         self.ejecutar_consultas_analiticas()
 
-        print("="*60)
-        print(" PIPELINE FINALIZADO CON ÉXITO")
-        print("="*60)
+        logging.info("="*60)
+        logging.info(" PIPELINE FINALIZADO DE SCRAPING - SHOPANALYTICS S.A.S.")
+        logging.info("="*60)
 
 if __name__ == "__main__":
     # Instanciar el objeto y ejecutar

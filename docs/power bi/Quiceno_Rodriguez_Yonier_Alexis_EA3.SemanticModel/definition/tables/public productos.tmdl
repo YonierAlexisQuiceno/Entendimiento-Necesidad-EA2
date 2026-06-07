@@ -1,0 +1,105 @@
+table 'public productos'
+	lineageTag: bc64ba9e-7f80-4b08-8cb3-5c7ffe510a83
+
+	column product_id
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: c5476c3f-024c-4dbf-9fd9-7532ce67467d
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_category_name
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: ed94fa8b-2fae-4712-b7c4-0a6f3a0f330a
+		summarizeBy: none
+		sourceColumn: product_category_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name_lenght
+		dataType: double
+		sourceProviderType: double
+		lineageTag: f5627a69-d669-481a-8e18-5ae5a8ec7e2f
+		summarizeBy: none
+		sourceColumn: product_name_lenght
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_description_lenght
+		dataType: double
+		sourceProviderType: double
+		lineageTag: 2df5323b-225e-42ed-8841-672c0cfa7fba
+		summarizeBy: none
+		sourceColumn: product_description_lenght
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_photos_qty
+		dataType: double
+		sourceProviderType: double
+		lineageTag: c4cd0ece-513a-41a1-96a8-f76ad7b0adbf
+		summarizeBy: none
+		sourceColumn: product_photos_qty
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column product_weight_g
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: bd1d4539-e5bd-4354-ae8a-a58b515bab3b
+		summarizeBy: none
+		sourceColumn: product_weight_g
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_length_cm
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 8eea40bc-94f7-4498-b49a-ba5884234207
+		summarizeBy: none
+		sourceColumn: product_length_cm
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_height_cm
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 8f494b23-59ef-413b-b184-40b315e6dae3
+		summarizeBy: none
+		sourceColumn: product_height_cm
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_width_cm
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 1e821127-f376-4955-b5fd-6a4830be85c5
+		summarizeBy: none
+		sourceColumn: product_width_cm
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public productos' = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("localhost", "shopanalytics"),
+				    public_productos = Origen{[Schema="public",Item="productos"]}[Data]
+				in
+				    public_productos
+
+	annotation PBI_ResultType = Table
+

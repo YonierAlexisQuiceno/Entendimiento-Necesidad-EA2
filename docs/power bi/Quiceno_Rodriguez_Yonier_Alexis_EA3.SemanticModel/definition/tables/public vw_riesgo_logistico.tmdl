@@ -1,0 +1,81 @@
+table 'public vw_riesgo_logistico'
+	lineageTag: abaf08eb-69df-4e94-be5f-0d7a3e907780
+
+	column titulo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: b7c92bee-8960-42cf-bffc-c804ee0332ce
+		summarizeBy: none
+		sourceColumn: titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column nivel_riesgo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 7621946f-4ec1-4011-99ac-c3dfb7d6da99
+		summarizeBy: none
+		sourceColumn: nivel_riesgo
+
+		annotation SummarizationSetBy = Automatic
+
+	column score_riesgo
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 2411a70e-5e1e-4c26-97bf-c2bc281f53d4
+		summarizeBy: sum
+		sourceColumn: score_riesgo
+
+		annotation SummarizationSetBy = Automatic
+
+	column categoria_riesgo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 83c3de3c-009d-48e0-a00d-7732b8a6aadf
+		summarizeBy: none
+		sourceColumn: categoria_riesgo
+
+		annotation SummarizationSetBy = Automatic
+
+	column temas_relacionados
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 2e0a345e-d33c-45ee-8372-6df846c9a63b
+		summarizeBy: none
+		sourceColumn: temas_relacionados
+
+		annotation SummarizationSetBy = Automatic
+
+	column url
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: ea3f9d86-f880-40ba-b1d6-75d9fe2d4838
+		summarizeBy: none
+		sourceColumn: url
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha_analisis
+		dataType: dateTime
+		formatString: Long Date
+		sourceProviderType: date
+		lineageTag: 5c11746e-eb39-4b2f-9c08-3581d7cc8c2e
+		summarizeBy: none
+		sourceColumn: fecha_analisis
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition 'public vw_riesgo_logistico' = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("localhost", "shopanalytics"),
+				    public_vw_riesgo_logistico = Origen{[Schema="public",Item="vw_riesgo_logistico"]}[Data]
+				in
+				    public_vw_riesgo_logistico
+
+	annotation PBI_ResultType = Table
+

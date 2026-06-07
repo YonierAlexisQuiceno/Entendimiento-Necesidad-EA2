@@ -1,0 +1,25 @@
+model Model
+	culture: es-CO
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-CO
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["public vw_riesgo_logistico","public items_orden","public ordenes","public productos","public vw_olist_clientes_vip","public clientes","public noticias_mercado","public noticias_enriquecidas"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'public vw_riesgo_logistico'
+ref table 'public items_orden'
+ref table 'public ordenes'
+ref table 'public productos'
+ref table 'public vw_olist_clientes_vip'
+ref table 'public clientes'
+ref table 'public noticias_mercado'
+ref table 'public noticias_enriquecidas'
+
+ref cultureInfo es-CO
+

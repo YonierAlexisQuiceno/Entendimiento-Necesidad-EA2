@@ -6,10 +6,17 @@ escrapeadas según su nivel y categoría de riesgo logístico.
 """
 
 import os
+import logging
 import pandas as pd
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 import re
+
+# Configuración de Logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 
 def aplicar_nlp_basico(texto):
@@ -63,9 +70,9 @@ def aplicar_nlp_basico(texto):
 
 def ejecutar_transformacion():
     """Ejecuta el pipeline completo de transformación y enriquecimiento."""
-    print("="*60)
-    print(" INICIANDO TRANSFORMACIÓN Y ENRIQUECIMIENTO (EA3) - NLP")
-    print("="*60)
+    logging.info("="*60)
+    logging.info(" INICIANDO TRANSFORMACIÓN Y ENRIQUECIMIENTO (EA3) - NLP")
+    logging.info("="*60)
     
     load_dotenv()
     db_user = os.getenv("DB_USER")
@@ -82,14 +89,14 @@ def ejecutar_transformacion():
 
     try:
         with engine.connect() as conn:
-            print("[*] Conectando a PostgreSQL y leyendo noticias crudas...")
+            logging.info("[*] Conectando a PostgreSQL y leyendo noticias crudas...")
             df_noticias = pd.read_sql("SELECT * FROM noticias_mercado", conn)
             
             if df_noticias.empty:
-                print("[-] No hay noticias para procesar. Ejecuta primero el scrapper.")
+                logging.info("[-] No hay noticias para procesar. Ejecuta primero el scrapper.")
                 return
 
-            print(f"[*] {len(df_noticias)} noticias leídas. Aplicando modelo NLP...")
+            logging.info(f"[*] {len(df_noticias)} noticias leídas. Aplicando modelo NLP...")
             
             # Aplicar transformación NLP a cada noticia
             resultados = df_noticias['texto_completo'].apply(aplicar_nlp_basico)
@@ -104,7 +111,7 @@ def ejecutar_transformacion():
             columnas_finales = [c for c in columnas_deseadas if c in columnas_disponibles]
             df_enriquecido = df_noticias[columnas_finales].copy()
             
-            print("[*] Guardando tabla 'noticias_enriquecidas' en PostgreSQL...")
+            logging.info("[*] Guardando tabla 'noticias_enriquecidas' en PostgreSQL...")
             # PostgreSQL no permite hacer DROP a una tabla (lo que hace to_sql con if_exists='replace') si una vista depende de ella.
             conn.execute(text("DROP VIEW IF EXISTS vw_riesgo_logistico;"))
             conn.commit()
@@ -112,12 +119,12 @@ def ejecutar_transformacion():
             
             # Resumen de distribución de riesgos
             distribucion = df_enriquecido['nivel_riesgo'].value_counts()
-            print(f"[+] Éxito: {len(df_enriquecido)} noticias enriquecidas guardadas.")
-            print(f"    Distribución -> Alto: {distribucion.get('Alto', 0)} | "
+            logging.info(f"[+] Éxito: {len(df_enriquecido)} noticias enriquecidas guardadas.")
+            logging.info(f"    Distribución -> Alto: {distribucion.get('Alto', 0)} | "
                   f"Medio: {distribucion.get('Medio', 0)} | Bajo: {distribucion.get('Bajo', 0)}")
             
             # Crear Vista Analítica para Power BI
-            print("[*] Creando Vista Analítica (vw_riesgo_logistico) para Power BI...")
+            logging.info("[*] Creando Vista Analítica (vw_riesgo_logistico) para Power BI...")
             vista_sql = text("""
             CREATE OR REPLACE VIEW vw_riesgo_logistico AS
             SELECT 
@@ -133,10 +140,10 @@ def ejecutar_transformacion():
             """)
             conn.execute(vista_sql)
             conn.commit()
-            print("[+] Vista SQL 'vw_riesgo_logistico' creada exitosamente.")
+            logging.info("[+] Vista SQL 'vw_riesgo_logistico' creada exitosamente.")
             
     except Exception as e:
-        print(f"[ERROR CRÍTICO] Fallo en la transformación: {e}")
+        logging.error(f"[ERROR CRÍTICO] Fallo en la transformación: {e}")
 
 
 if __name__ == "__main__":

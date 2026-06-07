@@ -49,18 +49,24 @@ if __name__ == "__main__":
     from sqlalchemy import text
     vista_sql = """
     CREATE OR REPLACE VIEW vw_olist_clientes_vip AS
+    WITH customer_counts AS (
+        SELECT c.customer_unique_id, COUNT(o.order_id) as total_ordenes
+        FROM clientes c
+        LEFT JOIN ordenes o ON c.customer_id = o.customer_id
+        GROUP BY c.customer_unique_id
+    )
     SELECT 
         c.customer_id,
         c.customer_city,
         c.customer_state,
-        COUNT(o.order_id) as total_ordenes,
+        cc.total_ordenes,
         CASE 
-            WHEN COUNT(o.order_id) > 1 THEN 'VIP'
+            WHEN cc.total_ordenes > 2 THEN 'VIP'
+            WHEN cc.total_ordenes = 2 THEN 'Frecuente'
             ELSE 'Estandar'
         END as categoria_cliente
     FROM clientes c
-    LEFT JOIN ordenes o ON c.customer_id = o.customer_id
-    GROUP BY c.customer_id, c.customer_city, c.customer_state;
+    JOIN customer_counts cc ON c.customer_unique_id = cc.customer_unique_id;
     """
     try:
         with engine.connect() as conn:

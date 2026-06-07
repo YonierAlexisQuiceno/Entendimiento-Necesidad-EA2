@@ -1,0 +1,78 @@
+table 'public noticias_enriquecidas'
+	lineageTag: c72eedd3-0efd-4a08-9a58-0e85c83085ed
+
+	column titulo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 64d53eb9-ded2-41d0-b1e5-c5774f580108
+		summarizeBy: none
+		sourceColumn: titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha_publicacion
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: df67d40b-f74b-49e2-a72e-abde75970311
+		summarizeBy: none
+		sourceColumn: fecha_publicacion
+
+		annotation SummarizationSetBy = Automatic
+
+	column temas_relacionados
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 46681768-5600-47b4-b848-ab328e947841
+		summarizeBy: none
+		sourceColumn: temas_relacionados
+
+		annotation SummarizationSetBy = Automatic
+
+	column nivel_riesgo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: bfb5c473-3416-49be-a2c1-301d83af00ef
+		summarizeBy: none
+		sourceColumn: nivel_riesgo
+
+		annotation SummarizationSetBy = Automatic
+
+	column score_riesgo
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 5f60eb8a-5f0e-4cf6-99fa-97995420ddb6
+		summarizeBy: sum
+		sourceColumn: score_riesgo
+
+		annotation SummarizationSetBy = Automatic
+
+	column categoria_riesgo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: b35975df-5458-4d61-abe6-6dc0a41e4b65
+		summarizeBy: none
+		sourceColumn: categoria_riesgo
+
+		annotation SummarizationSetBy = Automatic
+
+	column url
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 7b9eeed0-eb63-487f-8225-59f140c1a784
+		summarizeBy: none
+		sourceColumn: url
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public noticias_enriquecidas' = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("localhost", "shopanalytics"),
+				    public_noticias_enriquecidas = Origen{[Schema="public",Item="noticias_enriquecidas"]}[Data]
+				in
+				    public_noticias_enriquecidas
+
+	annotation PBI_ResultType = Table
+

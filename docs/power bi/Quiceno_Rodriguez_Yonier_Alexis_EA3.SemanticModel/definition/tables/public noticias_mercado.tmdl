@@ -1,0 +1,68 @@
+table 'public noticias_mercado'
+	lineageTag: 9a44fc17-5ffc-4dd0-ae5f-dfbbee90b720
+
+	column titulo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 7e592cf7-a68f-4196-9a93-66438a4b404d
+		summarizeBy: none
+		sourceColumn: titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column descripcion
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 258ebf57-7128-4bd0-9009-1747a1b4cecc
+		summarizeBy: none
+		sourceColumn: descripcion
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha_publicacion
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: b3e3466d-de60-4ebb-89ec-a6aeaaa66b90
+		summarizeBy: none
+		sourceColumn: fecha_publicacion
+
+		annotation SummarizationSetBy = Automatic
+
+	column url
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 6246e621-de14-4db3-b9fc-32e66956a328
+		summarizeBy: none
+		sourceColumn: url
+
+		annotation SummarizationSetBy = Automatic
+
+	column texto_completo
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 5aee5b4d-a132-4ee7-ae81-cd2177da0d4d
+		summarizeBy: none
+		sourceColumn: texto_completo
+
+		annotation SummarizationSetBy = Automatic
+
+	column temas_relacionados
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 1c51b377-8b67-44a9-b004-5a2a89633e3d
+		summarizeBy: none
+		sourceColumn: temas_relacionados
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public noticias_mercado' = m
+		mode: directQuery
+		source =
+				let
+				    Origen = PostgreSQL.Database("localhost", "shopanalytics"),
+				    public_noticias_mercado = Origen{[Schema="public",Item="noticias_mercado"]}[Data]
+				in
+				    public_noticias_mercado
+
+	annotation PBI_ResultType = Table
+
