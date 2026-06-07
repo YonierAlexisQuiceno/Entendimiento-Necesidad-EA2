@@ -22,12 +22,16 @@ El principal problema abordado a lo largo del curso fue el **sobrestock y el qui
 ## 3. Integración Continua y Control de Versiones (Valor Extra)
 Para garantizar la estabilidad del software y prepararlo para un entorno corporativo real, se implementaron las siguientes tecnologías:
 
-*   **Git y Control de Versiones:** Todo el código fuente está versionado bajo un repositorio Git local. Se estableció un archivo `.gitignore` profesional para excluir carpetas de entornos virtuales, binarios compilados y credenciales (`.env`), garantizando la seguridad del proyecto.
-*   **Integración Continua (GitHub Actions):** Se construyó el archivo `.github/workflows/ci.yml`. Este pipeline orquesta de manera automática un contenedor de Ubuntu que:
-    *   Descarga el código y levanta un entorno con Python 3.10.
-    *   Verifica la correcta instalación de dependencias vía `pip`.
-    *   Ejecuta validaciones sintácticas (`py_compile`) sobre el scraper y los modelos NLP.
-    *   Este paso demuestra cómo el proyecto puede ser integrado directamente en entornos CI/CD de clase mundial, reduciendo drásticamente los errores en producción.
+*   **Git y Control de Versiones:** Todo el código fuente está versionado bajo un repositorio Git local con flujo estructurado en tres ramas: `dev` (desarrollo), `qa` (pruebas de calidad) y `main` (producción). Se cuenta con un archivo `.gitignore` profesional para excluir dependencias y credenciales (`.env`).
+*   **Pruebas Automatizadas (pytest):** Se implementaron pruebas unitarias en `tests/test_pipeline.py` para verificar que la lógica fundamental de calidad y procesamiento de datos del pipeline se cumpla con cada cambio de código.
+*   **Integración Continua (CI - GitHub Actions):** Se configuró `.github/workflows/ci.yml` para dispararse en cada Pull Request hacia `dev`, `qa` o `main`, ejecutando de forma automatizada:
+    *   Instalación de dependencias y linting con `flake8`.
+    *   Validación de la compilación y sintaxis de todos los scripts principales (`ea1.py`, `scrapper.py`, `modelo.py`, `ejecucion.py`, `pipeline.py`, `dashboard.py`).
+    *   Ejecución de pruebas unitarias (`pytest`).
+*   **Despliegue Continuo (CD - GitHub Actions):** Se configuró `.github/workflows/cd.yml` para dispararse en cada push a las ramas del flujo, orquestando el pipeline según el ambiente:
+    *   **dev / qa:** Ejecución y generación de reportes simulados en entornos de pre-producción.
+    *   **main (production):** Ejecución total del ETL en DuckDB, generación del dashboard interactivo en `output/index.html` y publicación directa en **GitHub Pages** mediante despliegue nativo de Actions (sin requerir ramas intermedias).
+*   **Documentación de Configuración Manual:** Se ha actualizado la guía exhaustiva ([guia_configuracion_manual.md](guia_configuracion_manual.md)) detallando los pasos manuales en el portal de GitHub para activar Pages, crear entornos y configurar protecciones de rama.
 
 ## 4. Enlace al Video de Sustentación
 *(Pegar aquí el link de YouTube o Google Drive con el video grabado).*

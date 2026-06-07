@@ -136,7 +136,7 @@ def generar_dashboard(gold_path, output_dir='output'):
         {datetime.now().strftime('%Y-%m-%d %H:%M')}</div>
 </body></html>'''
 
-    html_path = os.path.join(output_dir, 'index_duckdb.html')
+    html_path = os.path.join(output_dir, 'index.html')
     with open(html_path, 'w') as f:
         f.write(html)
     print(f'Dashboard generado: {html_path}')
