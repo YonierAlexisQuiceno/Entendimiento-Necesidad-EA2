@@ -75,12 +75,15 @@ def ejecutar_pipeline(csv_path, output_dir='output'):
         FROM silver GROUP BY mes ORDER BY mes
     """).fetchdf().to_dict('records')
 
-    # Top vendedores
+    # Top vendedores (Solo vendedores con un minimo de transacciones representativas)
     top_vendedores = con.execute("""
         SELECT vendedor,
                SUM(venta_total) as total_ventas,
                COUNT(*) as transacciones
-        FROM silver GROUP BY vendedor ORDER BY total_ventas DESC
+        FROM silver 
+        GROUP BY vendedor 
+        HAVING COUNT(*) >= 2 -- Filtrado de muestras pequenas para evitar sesgos analiticos
+        ORDER BY total_ventas DESC
     """).fetchdf().to_dict('records')
 
     # Resumen general

@@ -33,7 +33,16 @@ Para resolver esto, la gerencia requiere un modelo de análisis de datos estruct
 ## 2.1 Objetivo General
 Desarrollar un modelo analítico y relacional de datos bajo la metodología **CRISP-DM** para optimizar la gestión del inventario de ShopAnalytics S.A.S., minimizando pérdidas económicas y mejorando la disponibilidad de productos en todas las zonas operativas.
 
-## 2.2 Objetivos Específicos e Indicadores Medibles (KPIs)
+## 2.2 Preguntas de Negocio (Fase 1 CRISP-DM)
+Para asegurar el correcto enfoque analítico y dar respuesta a la problemática, se plantean las siguientes preguntas rectoras exigidas por la metodología CRISP-DM:
+1. ¿Cuáles son los productos y categorías que presentan mayor rotación histórica y deben priorizarse en los almacenes?
+2. ¿Qué regiones geográficas concentran el mayor volumen de facturación y qué impacto logístico representa esto?
+3. ¿Qué porcentaje del inventario actual se encuentra en riesgo de estancamiento (sobrestock) generando costos innecesarios?
+4. ¿Qué artículos están a punto de quebrar su stock mínimo y requieren órdenes de compra urgentes (stockouts preventivos)?
+
+Estas preguntas guían directamente el diseño de la base de datos (Fase 2) y justifican las consultas analíticas implementadas (Fase 4 y 5).
+
+## 2.3 Objetivos Específicos e Indicadores Medibles (KPIs)
 Para garantizar la efectividad del proyecto, se definen los siguientes indicadores clave de rendimiento con metas cuantitativas concretas a alcanzar en un periodo de 6 meses:
 
 1. **Reducción de Sobrestock (Overstock):**
@@ -69,7 +78,7 @@ Para garantizar la efectividad del proyecto, se definen los siguientes indicador
 > [!IMPORTANT]
 > **Aclaración sobre el origen de los datos:** Con el fin de mitigar cualquier confusión, se declara de forma transparente que los datos utilizados en esta fase son **100% simulados sintéticamente** mediante algoritmos implementados en Python (utilizando `Pandas` y `NumPy`). 
 > 
-> Esta simulación recrea de manera exacta el comportamiento transaccional del comercio electrónico real en Colombia (distribución de precios, estacionalidades de ventas por regiones y hábitos de compra), generando un volumen de **más de 5,000 registros de ventas** y **más de 10,000 detalles de tickets**. La mención a Kaggle o Datos Abiertos corresponde a un marco de referencia metodológico y de comparación para el posterior escalamiento del sistema a gran escala en producción.
+> Esta simulación recrea de manera exacta el comportamiento transaccional del comercio electrónico real en Colombia, generando un volumen de **más de 5,000 registros de ventas** y **más de 10,000 detalles de tickets**. La mención a Kaggle o Datos Abiertos corresponde a un marco de referencia metodológico para el posterior escalamiento del sistema a gran escala en producción.
 
 ## 4.2 Fuentes Estructuradas del Proyecto
 
@@ -84,9 +93,9 @@ Para garantizar la efectividad del proyecto, se definen los siguientes indicador
 # 5. Modelo de Datos y Arquitectura de Almacenamiento
 
 ## 5.1 Alineación y Coherencia Tecnológica (SQLite vs PostgreSQL)
-Para evitar inconsistencias documentales, se detalla la justificación técnica de la arquitectura de almacenamiento dual:
-* **Entorno de Desarrollo Local e Informe Académico (SQLite):** Se selecciona **SQLite3** como motor analítico de base de datos local embebida. Esto elimina barreras de infraestructura para el docente en la revisión del proyecto, garantizando portabilidad absoluta (`shopanalytics.db` es un único archivo físico portable), rapidez extrema y ejecución autónoma en entornos interactivos (Jupyter Notebook / Google Colab) sin requerir servicios de red o credenciales de servidor externos.
-* **Entorno de Producción e Integración Corporativa (PostgreSQL):** Se proyecta y define el modelo físico en **PostgreSQL** para la fase 2 (Scraping de Noticias y Machine Learning NLP/SVM). La robustez de PostgreSQL permite manejar flujos concurrentes, integraciones directas con dashboards empresariales en Power BI y almacenamiento optimizado para texto no estructurado masivo (`TEXT`). Ambos esquemas comparten las mismas definiciones lógicas y relaciones SQL.
+Para evitar inconsistencias documentales señaladas en retroalimentaciones anteriores, se detalla la justificación técnica de la arquitectura de almacenamiento dual:
+* **Entorno de Desarrollo Local e Informe Académico (SQLite):** Se selecciona **SQLite3** como motor analítico de base de datos local embebida para esta primera fase (EA1). Esto elimina barreras de infraestructura para la revisión del proyecto, garantizando portabilidad absoluta (`shopanalytics.db` es un único archivo físico), rapidez extrema y ejecución autónoma en entornos interactivos sin requerir servicios externos.
+* **Entorno de Producción e Integración Corporativa (PostgreSQL):** Se proyecta y define el modelo físico final en **PostgreSQL** para las fases posteriores (Scraping y Machine Learning). Ambos esquemas comparten las mismas definiciones lógicas y relaciones SQL.
 
 ## 5.2 Esquema Físico de Base de Datos y Entidades
 Se introduce el modelo de base de datos normalizado (Forma Normal 3NF) enriquecido con controles de inventario:
@@ -141,6 +150,9 @@ erDiagram
 * `PRODUCTOS.stock_actual`: Cantidad física real disponible en el almacén central.
 * `PRODUCTOS.punto_reorden`: Nivel de inventario de seguridad. Si `stock_actual <= punto_reorden`, se dispara automáticamente una solicitud de reposición al proveedor.
 
+> **Evidencia Visual: Diagrama Entidad-Relación**  
+> ![Diagrama Entidad-Relación](img/diagrama_er_ea1.png)
+
 ---
 
 # 6. Conexión, Carga de Datos y Evidencia de Ejecución
@@ -152,6 +164,9 @@ Antes de ejecutar los reportes analíticos, el pipeline ejecuta pruebas automát
 1. **Validación de Conteo de Tablas:** Corrobora que todos los registros de los DataFrames de Pandas (maestros y transaccionales) coincidan exactamente con la cantidad de filas persistidas en SQLite.
 2. **Validación de Unicidad de Llaves Primarias (PK):** Chequea que no existan valores duplicados ni nulos en las columnas clave (`cliente_id`, `region_id`, `categoria_id`, `producto_id`, `venta_id`, `detalle_id`).
 3. **Validación de Integridad Referencial (Llaves Foráneas):** Asegura que no existan registros huérfanos. Verifica que todo ID foráneo en `Ventas` y `Detalle_Ventas` tenga su correspondiente fila en la tabla maestra.
+
+> **Evidencia Visual: Ejecución de la Carga de Prueba (SQLite)**  
+> ![Ejecución de la Carga de Prueba](img/carga_prueba_ea1.png)
 
 ---
 

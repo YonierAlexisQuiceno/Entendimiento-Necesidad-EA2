@@ -37,8 +37,6 @@ El sistema integra tres enfoques analíticos complementarios:
 │   ├── Quiceno_Rodriguez_Yonier_Alexis_EA4.md  # Informe EA4 (Video + CI/CD)
 │   └── guia_powerbi_ea3.md              # Guía de conexión PostgreSQL → Power BI
 ├── .github/workflows/ci.yml  # Pipeline de Integración Continua (GitHub Actions)
-├── 01_instalacion_inicial.bat # Instalación y configuración inicial
-├── 02_ejecucion_diaria.bat    # Ejecución completa del proyecto
 ├── requirements.txt           # Dependencias del proyecto
 └── .env                       # Variables de entorno (NO subir a Git)
 ```
@@ -56,17 +54,21 @@ El sistema integra tres enfoques analíticos complementarios:
 
 ## 4. Guía de Ejecución Rápida
 
-### Primera vez (Instalación)
-```powershell
-.\01_instalacion_inicial.bat
-```
-Crea el entorno virtual, instala dependencias, crea la BD en PostgreSQL e ingesta datos de Kaggle.
+### Instalación (Primera vez)
+```bash
+# Crear y activar entorno virtual
+python -m venv venv
+.\venv\Scripts\activate
 
-### Ejecución del proyecto
-```powershell
-.\02_ejecucion_diaria.bat
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Configurar variables de entorno y crear DB PostgreSQL
+python src/create_db.py
+
+# Ingestar datos de Kaggle a PostgreSQL
+python src/ingest_kaggle.py
 ```
-Ejecuta secuencialmente: EA1 (SQLite) → EA2 (Scrapper BBC) → EA3 (NLP + Enriquecimiento).
 
 ### Ejecución Manual por Entregas
 ```bash

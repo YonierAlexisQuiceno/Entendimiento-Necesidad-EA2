@@ -11,14 +11,15 @@
 
 # 1. Alineación y Actualización de la Necesidad (Fase 1: Comprensión del Negocio)
 
-## 1.1 Contexto e Integración del Proyecto
-En la primera entrega (EA1), se definió y estructuró la base de datos transaccional local **SQLite (`shopanalytics.db`)** para la optimización del inventario físico de **ShopAnalytics S.A.S.** (control de sobrestock, alerta preventiva de reabastecimiento e indicadores regionales de disponibilidad) utilizando más de 5,000 registros transaccionales simulados.
+## 1.1 Contexto e Integración del Proyecto (Fases 1 y 2 de CRISP-DM)
+**Fase 1 (Comprensión del Negocio):** En la primera entrega (EA1), se definió y estructuró la base de datos transaccional local **SQLite (`shopanalytics.db`)** para la optimización del inventario físico de **ShopAnalytics S.A.S.** (control de sobrestock, alerta preventiva de reabastecimiento e indicadores regionales de disponibilidad) utilizando más de 5,000 registros transaccionales simulados.
 
 Sin embargo, para lograr un **Sistema de Inteligencia de Mercado** verdaderamente proactivo, ShopAnalytics S.A.S. requiere cruzar su flujo transaccional con **factores macroambientales externos** (riesgos logísticos, políticos, cambiarios o huelgas en Latinoamérica) que impactan directamente los tiempos de importación, despacho y la disponibilidad de inventario.
 
-Por lo tanto, este segundo entregable (EA2) implementa las **Fases 2, 3 y 4 de CRISP-DM** mediante el desarrollo de un **Scraper de Noticias en Tiempo Real** utilizando Programación Orientada a Objetos (POO). Este scraper extrae de forma estructurada y sin duplicados información de actualidad desde la sección de Latinoamérica de **BBC Mundo** y la almacena en una base de datos relacional robusta (**PostgreSQL**), preparando la base de conocimiento para futuros modelos de Machine Learning (SVM) de clasificación de riesgos.
+**Fase 2 (Comprensión de los Datos):** Este segundo entregable (EA2) implementa las **Fases 2, 3 y 4 de CRISP-DM**. Exploramos como nueva fuente de datos la sección de Latinoamérica de **BBC Mundo**. A través de un **Scraper de Noticias en Tiempo Real** utilizando Programación Orientada a Objetos (POO), se extrae de forma estructurada y sin duplicados información de actualidad, almacenándola en una base de datos relacional robusta (**PostgreSQL**), preparando la base de conocimiento para futuros modelos de Machine Learning (SVM) de clasificación de riesgos.
 
-## 1.2 Objetivos Estratégicos del Web Scraping
+## 1.2 Objetivos Estratégicos del Web Scraping (Fase 1: Preguntas de Negocio)
+En esta fase nos replanteamos: ¿Cómo anticipar el riesgo externo antes de que afecte nuestras bodegas? Para responderlo, definimos los siguientes objetivos:
 * **Extracción Automatizada:** Capturar título, descripción, fecha de publicación, cuerpo de texto completo y etiquetas (países/temas relacionados) de las noticias recientes.
 * **Integridad sin Duplicados:** Implementar una validación física que identifique noticias ya almacenadas para evitar la redundancia de datos.
 * **Calidad de Textos para NLP:** Limpiar y estructurar el texto no estructurado (`texto_completo`) para alimentar un modelo analítico de vectorización y clasificación de riesgo logístico.
@@ -74,6 +75,9 @@ classDiagram
 * **`extraer_listado_noticias()`:** Escanea la página temática principal localizando las tarjetas de noticias mediante selectores adaptativos de tarjetas promocionales (`data-testid="promo"`).
 * **`extraer_cuerpo_articulo(url)`:** Navega de forma iterativa y autónoma a la URL específica de cada noticia para consolidar el texto plano del artículo (`data-component="text-block"`) y las etiquetas geográficas.
 * **`guardar_en_postgres()`:** Implementa el control de calidad e integridad de datos que evita la inserción de duplicados.
+
+> **Evidencia Visual (Código Fuente POO):**  
+> ![Clase Python Scraper POO](img/codigo_scraper_ea2.png)
 
 ---
 
@@ -137,6 +141,10 @@ El script se ejecutó exitosamente en el entorno del proyecto. A continuación s
 * **Efectividad de Extracción:** El scraper procesó de manera autónoma las **24 noticias principales** vigentes en el portal temático.
 * **Eficacia del Filtro de Duplicados:** Se detectó correctamente **1 noticia repetida** (ya persistida en una ejecución previa), ignorándola y evitando la polución de duplicados.
 * **Ingesta Exitosa:** Se persistieron **23 registros nuevos** con cuerpo completo y metadatos en la tabla física de PostgreSQL.
+
+> **Evidencia Visual (Ejecución y Base de Datos):**  
+> ![Log de Terminal](img/terminal_ejecucion_ea2.png)  
+> ![Registros en PostgreSQL](img/registros_pg_ea2.png)
 
 ---
 

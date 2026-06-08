@@ -1,8 +1,10 @@
-# EA3 - Transformación, Enriquecimiento y Análisis en Power BI
-
+# Portada
+**Título:** Transformación, Enriquecimiento y Análisis en Power BI (EA3)  
 **Estudiante:** Yonier Alexis Quiceno Rodríguez  
 **Universidad:** IU Digital de Antioquia  
-**Materia:** Programación para Análisis de Datos  
+**Programa:** Ingeniería de Software y Datos  
+**Grupo:** PREICA2601B020089 - Programación para Análisis de Datos  
+**Docente:** Ana Maria Lopez  
 **Fecha:** 31 de mayo de 2026  
 
 ---
@@ -40,13 +42,16 @@ Se implementaron dos mejoras estructurales:
 * **Fase 5 (Evaluación):** Validación en consola de la matriz de riesgos.
 * **Fase 6 (Despliegue):** Integración continua en la base de datos y consumo visual mediante Power BI en tiempo real.
 
-## 7. Análisis de Datos Enriquecidos y Power BI
+## 7. Conexión y Visualización en Power BI (Análisis de Datos Enriquecidos)
 Se conectó exitosamente PostgreSQL con Power BI Desktop utilizando ODBC (DirectQuery), lo que asegura que el modelo de datos de Power BI sea siempre un reflejo instantáneo de la base de datos física.
 
 *El tablero de Power BI permite analizar:*
 1. **Distribución Categórica:** Un gráfico circular que expone si el riesgo actual del mercado es principalmente Geopolítico, Financiero u Operativo.
 2. **Volumen de Alertas (Gravedad):** Gráfico de barras que alerta sobre cuántas noticias clasifican como "Riesgo Alto" hoy.
 3. **KPI de Score de Riesgo Global:** Un semáforo cuantitativo que le dice a la gerencia el estado actual del comercio exterior.
+
+> **Evidencia Visual (Tablero Analítico en Power BI):**  
+> ![Dashboard de Power BI](img/dashboard_powerbi_ea3.png)
 
 *(Nota: Se anexa el archivo `.pbix` junto con esta entrega, el cual contiene el tablero operativo).*
 
@@ -56,16 +61,17 @@ Se conectó exitosamente PostgreSQL con Power BI Desktop utilizando ODBC (Direct
 * La automatización completa del pipeline (Scraping -> NLP -> PostgreSQL -> Power BI) ahorra costos operativos, mitigando pérdidas por demoras en aduanas.
 
 ## 9. Bibliografía
-* McKinney, W. (2012). *Python for data analysis*. O'Reilly Media, Inc.
-* Microsoft. (2023). *Conectar PostgreSQL a Power BI*. Documentación oficial.
-* Wirth, R., & Hipp, J. (2000). CRISP-DM: Towards a standard process model for data mining.
-
-
-## Referencias
-
 * Wirth, R., & Hipp, J. (2000). *CRISP-DM: Towards a standard process model for data mining*. Proceedings of the 4th International Conference on the Practical Applications of Knowledge Discovery and Data Mining.
 * McKinney, W. (2012). *Python for Data Analysis*. O'Reilly Media.
 * Grinberg, M. (2018). *Flask Web Development: Developing Web Applications with Python*. O'Reilly Media.
 * Olist. (2018). *Brazilian E-Commerce Public Dataset by Olist*. Kaggle. Recuperado de https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
 * BBC Mundo. (2024). *BBC News Mundo*. Recuperado de https://www.bbc.com/mundo
 * Python Software Foundation. (2024). *SQLAlchemy Documentation*. Recuperado de https://docs.sqlalchemy.org/
+* Microsoft. (2023). *Conectar PostgreSQL a Power BI*. Documentación oficial.
+
+---
+
+## 10. Anexos
+1. **Código Fuente del Scraper y NLP:** Archivos adjuntos `scrapper.py`, `modelo.py` y `ejecucion.py`.
+2. **Registro de Ejecución:** Archivo adjunto `auditoria.txt`.
+3. **Tablero Analítico:** Archivo adjunto `Quiceno_Rodriguez_Yonier_Alexis_EA3.pbix`.
